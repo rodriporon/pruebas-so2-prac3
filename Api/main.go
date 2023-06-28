@@ -185,7 +185,7 @@ func smapPoint(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	smapsData := string(out)
-
+	fmt.Println(smapsData)
 	// Parsea los objetos y obtiene la información requerida
 	residentSize, virtualSize, ramUsagePercentage, memoryVisual := parseSmapsData(smapsData)
 
