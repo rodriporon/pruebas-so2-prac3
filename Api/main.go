@@ -215,30 +215,6 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 			residentSizeStr := strings.Fields(line)[1]
 			residentSizeInKb, _ := strconv.Atoi(residentSizeStr)
 			memoryStats.ResidentSize = residentSizeInKb
-		} else if strings.HasPrefix(line, "Pss:") {
-			pssStr := strings.Fields(line)[1]
-			pssInKb, _ := strconv.Atoi(pssStr)
-			memoryStats.Pss = pssInKb
-		} else if strings.HasPrefix(line, "Shared_Clean:") {
-			sharedCleanStr := strings.Fields(line)[1]
-			sharedCleanInKb, _ := strconv.Atoi(sharedCleanStr)
-			memoryStats.SharedClean = sharedCleanInKb
-		} else if strings.HasPrefix(line, "Shared_Dirty:") {
-			sharedDirtyStr := strings.Fields(line)[1]
-			sharedDirtyInKb, _ := strconv.Atoi(sharedDirtyStr)
-			memoryStats.SharedDirty = sharedDirtyInKb
-		} else if strings.HasPrefix(line, "Private_Clean:") {
-			privateCleanStr := strings.Fields(line)[1]
-			privateCleanInKb, _ := strconv.Atoi(privateCleanStr)
-			memoryStats.PrivateClean = privateCleanInKb
-		} else if strings.HasPrefix(line, "Private_Dirty:") {
-			privateDirtyStr := strings.Fields(line)[1]
-			privateDirtyInKb, _ := strconv.Atoi(privateDirtyStr)
-			memoryStats.PrivateDirty = privateDirtyInKb
-		} else if strings.HasPrefix(line, "Referenced:") {
-			referencedStr := strings.Fields(line)[1]
-			referencedInKb, _ := strconv.Atoi(referencedStr)
-			memoryStats.Referenced = referencedInKb
 		}
 	}
 
