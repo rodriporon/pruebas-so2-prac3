@@ -223,9 +223,6 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 	serverMemorySize := getTotalServerMemory()
 
-	// Calcula el porcentaje de consumo de memoria RAM
-	ramUsagePercentage = float64(residentSize) / float64(serverMemorySize) * 100
-
 	// Memoria en KB
 	virtualSize = memoryStats.Size
 	// Memoria en MB
@@ -233,6 +230,11 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 	residentSize = memoryStats.Rss
 	residentSize = virtualSize / 1024
+
+	// Calcula el porcentaje de consumo de memoria RAM
+	ramUsagePercentage = float64(residentSize) / float64(serverMemorySize) * 100
+
+
 
 	return residentSize, virtualSize, ramUsagePercentage, memoryVisual
 }
