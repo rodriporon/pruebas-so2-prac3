@@ -274,7 +274,7 @@ func parseSmapsData(smapsData string) MemoryStats {
 			memoryStats.Rss += rss
 		}
 
-		memoryStats.SmapReturn = append(smapReturnArray, smapReturn)
+		smapReturnArray = append(smapReturnArray, smapReturn)
 	}
 
 	/*
@@ -286,6 +286,8 @@ func parseSmapsData(smapsData string) MemoryStats {
 
 	// Calcula el porcentaje de consumo de memoria RAM
 	memoryStats.RamUsagePercentage = float64(memoryStats.Rss) / float64(6000) * 100
+
+	memoryStats.SmapReturn = smapReturnArray
 
 	return memoryStats
 }
