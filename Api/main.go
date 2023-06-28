@@ -136,7 +136,7 @@ func mapPoint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rutaMap := fmt.Sprintf("%s%s%s", "/proc/", data.Pid, "/maps")
-	out, err := exec.Command("cat", rutaMap).Output()
+	out, err := exec.Command("sudo cat", rutaMap).Output()
 	if err != nil {
 		log.Fatal(err)
 	}
