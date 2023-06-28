@@ -208,7 +208,9 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 	for i, line := range lines {
 		if i == 0 {
+			fmt.Println("------------------------")
 			fmt.Println(line)
+			fmt.Println("------------------------")
 		}
 		if strings.HasPrefix(line, "Size:") {
 			fields := strings.Fields(line)
