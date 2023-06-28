@@ -206,7 +206,10 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 	lines := strings.Split(smapsData, "\n")
 
-	for _, line := range lines {
+	for i, line := range lines {
+		if i == 0 {
+			fmt.Println(line)
+		}
 		if strings.HasPrefix(line, "Size:") {
 			fields := strings.Fields(line)
 			size, _ := strconv.Atoi(fields[1])
