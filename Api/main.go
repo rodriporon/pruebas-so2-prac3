@@ -212,7 +212,7 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 			fmt.Println(line)
 			fmt.Println("------------------------------")
 		}
-		if i == len(lines) - 23 {
+		if i == len(lines) - 24 {
 			fmt.Println("Ultima linea:")
 			fmt.Println(line)
 			fmt.Println("------------------------------")
