@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"regexp"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -204,13 +205,16 @@ func smapPoint(w http.ResponseWriter, r *http.Request) {
 func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePercentage float64, memoryVisual string) {
 	var memoryStats MemoryStats
 
-	blockLines := strings.Split(smapsData, "\n\n")
+	patron := regexp.MustCompile(`VmFlags:.*`)
 
-	for _, block := range blockLines {
-		fmt.Println("Bloque: ------------------------")
+	blocks := patron.Split(smapsData, -1)
+
+	for _, block := range blocks {
+		fmt.Println("----------------------------------------")
 		fmt.Println(block)
-		fmt.Println("Fin bloque: ------------------------")
+		fmt.Println("----------------------------------------")
 	}
+
 	lines := strings.Split(smapsData, "\n")
 
 	for i, line := range lines {
