@@ -215,6 +215,7 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 		if i == 0 {
 			value := strings.Split(line[0], "-")
 			fmt.Println("--------------------- Inicial")
+			fmt.Println("Dirección completa" + value)
 			fmt.Println(value[0])
 			fmt.Println("---------------------")
 		}
