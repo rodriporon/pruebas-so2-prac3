@@ -173,7 +173,14 @@ func smapPoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(data.Pid)
+	rutaSmap := fmt.Sprintf("%s%s%s", "/proc/", data.Pid, "/smaps")
+	//hacer un cat del archivo smap del proceso con permisos sudo
+	out, err := exec.Command("sudo", "cat", rutaSmap).Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	result := string(out)
+	fmt.Println(result)
 }
 
 // ----------------------------------
