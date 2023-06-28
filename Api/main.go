@@ -56,11 +56,6 @@ type SmapProcess struct {
 	Pid string
 }
 
-type MemoryStats struct {
-	Rss int
-	Size int
-}
-
 func main() {
 
 	//Crear Servidor.
@@ -184,78 +179,13 @@ func smapPoint(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	smapsData := string(out)
-
-	residentSize, virtualSize, ramUsagePercentage, memoryVisual := parseSmapsData(smapsData)
-
-	// Imprime los resultados
-	fmt.Printf("Tamaño de la memoria residente: %d MB\n", residentSize)
-	fmt.Printf("Tamaño total de la memoria virtual: %d MB\n", virtualSize)
-	fmt.Printf("Porcentaje de consumo de memoria RAM: %.2f%%\n", ramUsagePercentage)
-	fmt.Println("Representación visual de la memoria:")
-	fmt.Println(memoryVisual)
-
+	result := string(out)
+	fmt.Println(result)
 }
 
 // ----------------------------------
 // ------ Metodos - Obtener Datos -----
 // ----------------------------------
-
-func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePercentage float64, memoryVisual string) {
-	var memoryStats MemoryStats
-
-	lines := strings.Split(smapsData, "\n")
-
-	for _, line := range lines {
-		if strings.HasPrefix(line, "Size:") {
-			fields := strings.Fields(line)
-			if len(fields) >= 2 {
-				size, _ := strconv.Atoi(fields[1])
-				memoryStats.Size = size
-			}
-		} else if strings.HasPrefix(line, "Rss:") {
-			fields := strings.Fields(line)
-			if len(fields) >= 2 {
-				rss, _ := strconv.Atoi(fields[1])
-				memoryStats.Rss = rss
-			}
-		} else if line == "" {
-			// Procesa los datos del objeto actual
-			residentSize += memoryStats.Rss
-			virtualSize += memoryStats.Size
-			memoryVisual += generateMemoryVisual(memoryStats.Rss, memoryStats.Size) + "\n"
-
-			// Reinicia las estadísticas de memoria para el próximo objeto
-			memoryStats = MemoryStats{}
-		}
-	}
-
-	serverMemorySize := getTotalServerMemory()
-
-	// Calcula el porcentaje de consumo de memoria RAM
-	ramUsagePercentage = float64(residentSize) / float64(serverMemorySize) * 100
-
-	return residentSize, virtualSize, ramUsagePercentage, memoryVisual
-}
-
-func getTotalServerMemory() int {
-	// Implementa aquí la lógica para obtener el tamaño total de la memoria del servidor.
-	// Puede variar dependiendo del sistema operativo y la configuración.
-	// En este ejemplo, se devuelve un valor ficticio de 2048 MB.
-	return 2048
-}
-
-func generateMemoryVisual(residentSize, totalSize int) string {
-	// Implementa aquí la lógica para generar la representación visual de la memoria.
-	// Puedes utilizar cualquier técnica o librería que desees.
-	// En este ejemplo, se genera un gráfico simple utilizando asteriscos (*).
-
-	visual := strings.Repeat("*", residentSize/1024)
-	visual += " / "
-	visual += strings.Repeat("*", totalSize/1024)
-
-	return visual
-}
 
 // Obtener datos map.
 func GetDataMap(data string) []MapReturn {
