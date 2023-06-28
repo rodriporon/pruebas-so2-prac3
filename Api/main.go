@@ -204,6 +204,13 @@ func smapPoint(w http.ResponseWriter, r *http.Request) {
 func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePercentage float64, memoryVisual string) {
 	var memoryStats MemoryStats
 
+	blockLines := strings.Split(smapsData, "\n\n")
+
+	for _, block := range blockLines {
+		fmt.Println("Bloque: ------------------------")
+		fmt.Println(block)
+		fmt.Println("Fin bloque: ------------------------")
+	}
 	lines := strings.Split(smapsData, "\n")
 
 	for i, line := range lines {
