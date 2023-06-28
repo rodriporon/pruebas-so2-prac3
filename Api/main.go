@@ -208,12 +208,12 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 	for i, line := range lines {
 		if i == 0 {
-			fmt.Println("------------------------")
+			fmt.Println("FIRST LINE:")
 			fmt.Println(line)
 			fmt.Println("------------------------")
 		}
-		if i == lines.Len()-1 {
-			fmt.Println("------------------------")
+		if i == len(lines)-1 {
+			fmt.Println("LAST LINE:")
 			fmt.Println(line)
 			fmt.Println("------------------------")
 		}
