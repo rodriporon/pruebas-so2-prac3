@@ -180,7 +180,7 @@ func smapPoint(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	result := string(out)
-	fmt.Println(result)
+	w.Write([]byte(result))
 }
 
 // ----------------------------------
