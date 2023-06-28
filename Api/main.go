@@ -68,6 +68,7 @@ func main() {
 	router.HandleFunc("/cpu", cpuPoint).Methods("GET")
 	router.HandleFunc("/kill", killPoint).Methods("POST")
 	router.HandleFunc("/map", mapPoint).Methods("POST")
+	router.HandleFunc("/smap", smapPoint).Methods("POST")
 	fmt.Println("Servidor corriendo en el puerto 8081")
 	http.ListenAndServe(":8081", handlers.CORS(headers, methods, origins)(router)) //Levantar servidor en el puerto 8080
 }
