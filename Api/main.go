@@ -227,9 +227,12 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 	ramUsagePercentage = float64(residentSize) / float64(serverMemorySize) * 100
 
 	// Memoria en KB
-	residentSize = memoryStats.Size
+	virtualSize = memoryStats.Size
 	// Memoria en MB
-	residentSize = residentSize / 1024
+	virtualSize = residentSize / 1024
+
+	residentSize = memoryStats.Rss
+	residentSize = virtualSize / 1024
 
 	return residentSize, virtualSize, ramUsagePercentage, memoryVisual
 }
