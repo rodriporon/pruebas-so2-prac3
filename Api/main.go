@@ -213,6 +213,12 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 			fmt.Println(fields, "\n", size)
 			memoryStats.Size += size
 		}
+		if strings.HasPrefix(line, "Rss:") {
+			fields := strings.Fields(line)
+			rss, _ := strconv.Atoi(fields[1])
+			fmt.Println(fields, "\n", rss)
+			memoryStats.Rss += rss
+		}
 	}
 
 	serverMemorySize := getTotalServerMemory()
