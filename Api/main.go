@@ -210,6 +210,7 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 		if strings.HasPrefix(line, "Size:") {
 			fields := strings.Fields(line)
 			size, _ := strconv.Atoi(fields[1])
+			fmt.Println(fields, "\n", size)
 			memoryStats.Size += size
 		}
 	}
