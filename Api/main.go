@@ -188,7 +188,7 @@ func smapPoint(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	smapsData := string(out)
-	fmt.Println(smapsData)
+	//fmt.Println(smapsData)
 	// Parsea los objetos y obtiene la información requerida
 	residentSize, virtualSize, ramUsagePercentage, initialBlock, finalBlock := parseSmapsData(smapsData)
 
@@ -221,7 +221,9 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 		if i == len(blocks)-1 {
 			value := strings.Split(line[0], "-")
-			memoryStats.FinalBlock = value[1]
+			fmt.Println("-------------------------")
+			fmt.Println(value)
+			fmt.Println("-------------------------")
 		}
 	}
 
