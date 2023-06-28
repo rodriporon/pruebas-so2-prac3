@@ -56,6 +56,11 @@ type SmapProcess struct {
 	Pid string
 }
 
+type MemoryStats struct {
+	Rss int
+	Size int
+}
+
 func main() {
 
 	//Crear Servidor.
