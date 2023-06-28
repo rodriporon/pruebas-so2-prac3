@@ -208,22 +208,7 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 	for _, line := range lines {
 		if strings.HasPrefix(line, "Size:") {
-			fields := strings.Fields(line)
-			if len(fields) >= 2 {
-				size, _ := strconv.Atoi(fields[1])
-				memoryStats.Size = size
-			}
-		} else if strings.HasPrefix(line, "Rss:") {
-			fields := strings.Fields(line)
-			if len(fields) >= 2 {
-				rss, _ := strconv.Atoi(fields[1])
-				memoryStats.Rss = rss
-			}
-		} else if line == "" {
-			// Procesa los datos del objeto actual
-			residentSize += memoryStats.Rss
-			virtualSize += memoryStats.Size
-			memoryVisual += generateMemoryVisual(memoryStats.Rss, memoryStats.Size) + "\n"
+			memoryStats.Size += parseMemoryStat(line)
 		}
 	}
 
