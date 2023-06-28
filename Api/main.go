@@ -63,11 +63,24 @@ type MemoryStats struct {
 	InitialBlock       string
 	FinalBlock         string
 	RamUsagePercentage float64
+	SmapReturn         []SmapReturn
+}
+
+type SmapReturn struct {
+	Rss  int
+	Size int
 }
 
 func main() {
 
-	//Crear Servidor.
+	/*
+		Se crea un router para poder manejar las peticiones
+		que se realizan al servidor. Se recibirán peticiones
+		GET y POST. En las peticiones GET se obtendrán los
+		datos de la RAM y CPU. En las peticiones POST se
+		recibirá el pid del proceso a matar e información de
+		los mapas de memoria del proceso.
+	*/
 	router := mux.NewRouter()
 	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "DELETE"})
@@ -214,6 +227,8 @@ func parseSmapsData(smapsData string) MemoryStats {
 		en este caso se retorna un struct con los siguientes campos:
 	*/
 	var memoryStats MemoryStats
+	var smapReturnArray []SmapReturn
+	var smapReturn SmapReturn
 
 	patron := regexp.MustCompile(`VmFlags:.*`)
 
@@ -249,13 +264,17 @@ func parseSmapsData(smapsData string) MemoryStats {
 		if strings.HasPrefix(line, "Size:") {
 			fields := strings.Fields(line)
 			size, _ := strconv.Atoi(fields[1])
+			smapReturn.Size = size
 			memoryStats.Size += size
 		}
 		if strings.HasPrefix(line, "Rss:") {
 			fields := strings.Fields(line)
 			rss, _ := strconv.Atoi(fields[1])
+			smapReturn.Rss = rss
 			memoryStats.Rss += rss
 		}
+
+		memoryStats.SmapReturn = append(smapReturnArray, smapReturn)
 	}
 
 	/*
@@ -291,6 +310,7 @@ func GetDataMap(data string) []MapReturn {
 		}
 		size := float64(sizeMax-sizeMin) / 1024
 		mapU.Size = string(strconv.FormatFloat(size, 'f', 2, 64)) + " KB"
+
 		mapU.Permissions = splitLineResult[1]
 		mapU.Device = splitLineResult[3]
 		mapU.Pathname = splitLineResult[len(splitLineResult)-1]
