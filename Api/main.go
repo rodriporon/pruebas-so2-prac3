@@ -212,7 +212,6 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 	blocks := patron.Split(smapsData, -1)
 
 	for i, block := range blocks {
-		fmt.Println(i, block)
 		line := strings.Split(block, "\n")
 
 		if i == 0 {
