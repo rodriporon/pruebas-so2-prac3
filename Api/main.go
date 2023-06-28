@@ -208,27 +208,41 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 	for _, line := range lines {
 		if strings.HasPrefix(line, "Size:") {
-			fields := strings.Fields(line)
-			if len(fields) >= 2 {
-				size, _ := strconv.Atoi(fields[1])
-				memoryStats.Size = size
-			}
+			size := strings.Fields(line)[1]
+			sizeInKb, _ := strconv.Atoi(size)
+			memoryStats.Size = sizeInKb
 		} else if strings.HasPrefix(line, "Rss:") {
-			fields := strings.Fields(line)
-			if len(fields) >= 2 {
-				rss, _ := strconv.Atoi(fields[1])
-				memoryStats.Rss = rss
-			}
-		} else if line == "" {
-			// Procesa los datos del objeto actual
-			residentSize += memoryStats.Rss
-			virtualSize += memoryStats.Size
-			memoryVisual += generateMemoryVisual(memoryStats.Rss, memoryStats.Size) + "\n"
-
-			// Reinicia las estadísticas de memoria para el próximo objeto
-			memoryStats = MemoryStats{}
+			residentSizeStr := strings.Fields(line)[1]
+			residentSizeInKb, _ := strconv.Atoi(residentSizeStr)
+			memoryStats.ResidentSize = residentSizeInKb
+		} else if strings.HasPrefix(line, "Pss:") {
+			pssStr := strings.Fields(line)[1]
+			pssInKb, _ := strconv.Atoi(pssStr)
+			memoryStats.Pss = pssInKb
+		} else if strings.HasPrefix(line, "Shared_Clean:") {
+			sharedCleanStr := strings.Fields(line)[1]
+			sharedCleanInKb, _ := strconv.Atoi(sharedCleanStr)
+			memoryStats.SharedClean = sharedCleanInKb
+		} else if strings.HasPrefix(line, "Shared_Dirty:") {
+			sharedDirtyStr := strings.Fields(line)[1]
+			sharedDirtyInKb, _ := strconv.Atoi(sharedDirtyStr)
+			memoryStats.SharedDirty = sharedDirtyInKb
+		} else if strings.HasPrefix(line, "Private_Clean:") {
+			privateCleanStr := strings.Fields(line)[1]
+			privateCleanInKb, _ := strconv.Atoi(privateCleanStr)
+			memoryStats.PrivateClean = privateCleanInKb
+		} else if strings.HasPrefix(line, "Private_Dirty:") {
+			privateDirtyStr := strings.Fields(line)[1]
+			privateDirtyInKb, _ := strconv.Atoi(privateDirtyStr)
+			memoryStats.PrivateDirty = privateDirtyInKb
+		} else if strings.HasPrefix(line, "Referenced:") {
+			referencedStr := strings.Fields(line)[1]
+			referencedInKb, _ := strconv.Atoi(referencedStr)
+			memoryStats.Referenced = referencedInKb
 		}
 	}
+
+	// Calcula el tamaño total de la memoria virtual
 
 	serverMemorySize := getTotalServerMemory()
 
