@@ -219,7 +219,7 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 			memoryStats.InitialBlock = value[0]
 		}
 
-		if i == len(blocks)-1 {
+		if i == len(blocks)-2 {
 			value := strings.Split(line[0], "-")
 			fmt.Println("-------------------------")
 			fmt.Println(value)
