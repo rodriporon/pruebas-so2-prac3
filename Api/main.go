@@ -58,10 +58,11 @@ type SmapProcess struct {
 }
 
 type MemoryStats struct {
-	Rss          int
-	Size         int
-	InitialBlock string
-	FinalBlock   string
+	Rss                int
+	Size               int
+	InitialBlock       string
+	FinalBlock         string
+	RamUsagePercentage float64
 }
 
 func main() {
@@ -190,21 +191,28 @@ func smapPoint(w http.ResponseWriter, r *http.Request) {
 	smapsData := string(out)
 	//fmt.Println(smapsData)
 	// Parsea los objetos y obtiene la información requerida
-	residentSize, virtualSize, ramUsagePercentage, initialBlock, finalBlock := parseSmapsData(smapsData)
+	smapResult := parseSmapsData(smapsData)
 
-	// Imprime los resultados
-	fmt.Printf("Tamaño de la memoria residente: %d MB\n", residentSize)
-	fmt.Printf("Tamaño total de la memoria virtual: %d MB\n", virtualSize)
-	fmt.Printf("Porcentaje de consumo de memoria RAM: %.2f%%\n", ramUsagePercentage)
-	fmt.Printf("Bloque inicial: %s\n", initialBlock)
-	fmt.Printf("Bloque final: %s\n", finalBlock)
+	// Convertir la lista en formato JSON
+	jsonData, err := json.Marshal(smapResult)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	w.Write(jsonData)
 }
 
 // ----------------------------------
 // ------ Metodos - Obtener Datos -----
 // ----------------------------------
 
-func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePercentage float64, initialBlock string, finalBlock string) {
+func parseSmapsData(smapsData string) MemoryStats {
+	/*
+		Se define la estructura de datos que se va a retornar
+		en este caso se retorna un struct con los siguientes campos:
+	*/
 	var memoryStats MemoryStats
 
 	patron := regexp.MustCompile(`VmFlags:.*`)
@@ -225,8 +233,18 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 		}
 	}
 
+	/*
+		Se hace un split  de la cadena de texto recibida por el parámetro smapsData
+		el cual contiene la información del archivo smaps del proceso
+	*/
 	lines := strings.Split(smapsData, "\n")
 
+	/*
+		Se recorre cada línea de la cadena de texto y se obtiene la información
+		como el tamaño de la memoria residente y el tamaño total de la memoria virtual
+		esto usando la función strings.HasPrefix() que permite identificar si una cadena
+		comienza con un prefijo determinado
+	*/
 	for _, line := range lines {
 		if strings.HasPrefix(line, "Size:") {
 			fields := strings.Fields(line)
@@ -240,42 +258,17 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 		}
 	}
 
-	serverMemorySize := getTotalServerMemory()
-
-	// Memoria en KB
-	virtualSize = memoryStats.Size
-	// Memoria en MB
-	virtualSize = virtualSize / 1024
-
-	residentSize = memoryStats.Rss
-	residentSize = residentSize / 1024
+	/*
+		Se convierte el tamaño de la memoria residente y el tamaño total de la memoria virtual
+		a megabytes dividiendo entre 1024 ya que vienen en kilobytes por defecto
+	*/
+	memoryStats.Size = memoryStats.Size / 1024
+	memoryStats.Rss = memoryStats.Rss / 1024
 
 	// Calcula el porcentaje de consumo de memoria RAM
-	ramUsagePercentage = float64(residentSize) / float64(serverMemorySize) * 100
+	memoryStats.RamUsagePercentage = float64(memoryStats.Rss) / float64(6000) * 100
 
-	initialBlock = memoryStats.InitialBlock
-	finalBlock = memoryStats.FinalBlock
-
-	return residentSize, virtualSize, ramUsagePercentage, initialBlock, finalBlock
-}
-
-func getTotalServerMemory() int {
-	// Implementa aquí la lógica para obtener el tamaño total de la memoria del servidor.
-	// Puede variar dependiendo del sistema operativo y la configuración.
-	// En este ejemplo, se devuelve un valor ficticio de 2048 MB.
-	return 2048
-}
-
-func generateMemoryVisual(residentSize, totalSize int) string {
-	// Implementa aquí la lógica para generar la representación visual de la memoria.
-	// Puedes utilizar cualquier técnica o librería que desees.
-	// En este ejemplo, se genera un gráfico simple utilizando asteriscos (*).
-
-	visual := strings.Repeat("*", residentSize/1024)
-	visual += " / "
-	visual += strings.Repeat("*", totalSize/1024)
-
-	return visual
+	return memoryStats
 }
 
 // Obtener datos map.
