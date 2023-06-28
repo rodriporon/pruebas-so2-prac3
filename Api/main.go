@@ -226,7 +226,7 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 		}
 
 		if i == len(blocks)-2 {
-			value := strings.Split(line[0], "-")
+			value := strings.Split(line[0], " ")
 			fmt.Println("---------------------")
 			fmt.Println("Posicion: ", i)
 			fmt.Println(value)
