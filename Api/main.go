@@ -188,31 +188,39 @@ func smapPoint(w http.ResponseWriter, r *http.Request) {
 	smapsData := string(out)
 	fmt.Println(smapsData)
 	// Parsea los objetos y obtiene la información requerida
-	residentSize, virtualSize, ramUsagePercentage, memoryVisual := parseSmapsData(smapsData)
+	residentSize, virtualSize, ramUsagePercentage, initialBlock, finalBlock := parseSmapsData(smapsData)
 
 	// Imprime los resultados
 	fmt.Printf("Tamaño de la memoria residente: %d MB\n", residentSize)
 	fmt.Printf("Tamaño total de la memoria virtual: %d MB\n", virtualSize)
 	fmt.Printf("Porcentaje de consumo de memoria RAM: %.2f%%\n", ramUsagePercentage)
-	fmt.Println("Representación visual de la memoria:")
-	fmt.Println(memoryVisual)
+	fmt.Printf("Bloque inicial: %s\n", initialBlock)
+	fmt.Printf("Bloque final: %s\n", finalBlock)
 }
 
 // ----------------------------------
 // ------ Metodos - Obtener Datos -----
 // ----------------------------------
 
-func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePercentage float64, memoryVisual string) {
+func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePercentage float64, initialBlock string, finalBlock string) {
 	var memoryStats MemoryStats
 
 	patron := regexp.MustCompile(`VmFlags:.*`)
 
 	blocks := patron.Split(smapsData, -1)
 
-	for _, block := range blocks {
-		fmt.Println("----------------------------------------")
-		fmt.Println(block)
-		fmt.Println("----------------------------------------")
+	for i, block := range blocks {
+		line := strings.Split(block, "\n")
+		
+		if i == 0 {
+			value := strings.Split(line[0], "-")
+			initialBlock = value[0]
+		}
+
+		if i == len(blocks)-1 {
+			value := strings.Split(line[0], "-")
+			finalBlock = value[1]
+		}
 	}
 
 	lines := strings.Split(smapsData, "\n")
@@ -246,7 +254,7 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 
 
-	return residentSize, virtualSize, ramUsagePercentage, memoryVisual
+	return residentSize, virtualSize, ramUsagePercentage, initialBlock, finalBlock
 }
 
 func getTotalServerMemory() int {
