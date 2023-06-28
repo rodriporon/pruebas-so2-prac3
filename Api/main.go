@@ -207,7 +207,16 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 	lines := strings.Split(smapsData, "\n")
 
 	for i, line := range lines {
-		fmt.Println(i, line)
+		if i == 0 {
+			fmt.Println("Primera linea:")
+			fmt.Println(line)
+			fmt.Println("------------------------------")
+		}
+		if i == len(lines) - 23 {
+			fmt.Println("Ultima linea:")
+			fmt.Println(line)
+			fmt.Println("------------------------------")
+		}
 		if strings.HasPrefix(line, "Size:") {
 			fields := strings.Fields(line)
 			size, _ := strconv.Atoi(fields[1])
