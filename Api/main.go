@@ -52,6 +52,10 @@ type MapProcess struct {
 	Pid string
 }
 
+type SmapProcess struct {
+	Pid string
+}
+
 func main() {
 
 	//Crear Servidor.
@@ -156,6 +160,19 @@ func mapPoint(w http.ResponseWriter, r *http.Request) {
 
 	// Escribir los datos JSON en la respuesta
 	w.Write(jsonData)
+}
+
+// SmapPoint.
+func smapPoint(w http.ResponseWriter, r *http.Request) {
+
+	data := &SmapProcess{} //Estructura donde recibimos datos
+	err := json.NewDecoder(r.Body).Decode(data)
+	if err != nil {
+		fmt.Fprintf(w, "%v", err)
+		return
+	}
+
+	fmt.Println(data.Pid)
 }
 
 // ----------------------------------
