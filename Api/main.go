@@ -219,6 +219,8 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 			fmt.Println("---------------------")
 			fmt.Println("Posicion: ", i)
 			fmt.Println(value)
+			fmt.Println(line)
+			fmt.Println(line[0])
 			fmt.Println("---------------------")
 			memoryStats.InitialBlock = value[0]
 		}
@@ -228,6 +230,8 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 			fmt.Println("---------------------")
 			fmt.Println("Posicion: ", i)
 			fmt.Println(value)
+			fmt.Println(line)
+			fmt.Println(line[0])
 			fmt.Println("---------------------")
 		}
 	}
