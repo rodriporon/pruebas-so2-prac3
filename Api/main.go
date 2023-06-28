@@ -212,6 +212,7 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 			size, _ := strconv.Atoi(fields[1])
 			fmt.Println(fields, "\n", size)
 			memoryStats.Size += size
+
 		}
 	}
 
@@ -219,6 +220,8 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 	// Calcula el porcentaje de consumo de memoria RAM
 	ramUsagePercentage = float64(residentSize) / float64(serverMemorySize) * 100
+
+	residentSize = memoryStats.Size
 
 	return residentSize, virtualSize, ramUsagePercentage, memoryVisual
 }
