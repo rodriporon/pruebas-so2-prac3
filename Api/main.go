@@ -231,8 +231,6 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 			fmt.Println(value)
 			fmt.Println("---------------------")
 		}
-
-		fmt.Println(i, line)
 	}
 
 	lines := strings.Split(smapsData, "\n")
