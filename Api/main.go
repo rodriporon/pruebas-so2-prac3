@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
-	"regexp"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -58,8 +58,10 @@ type SmapProcess struct {
 }
 
 type MemoryStats struct {
-	Rss int
-	Size int
+	Rss          int
+	Size         int
+	InitialBlock string
+	FinalBlock   string
 }
 
 func main() {
@@ -211,15 +213,15 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 
 	for i, block := range blocks {
 		line := strings.Split(block, "\n")
-		
+
 		if i == 0 {
 			value := strings.Split(line[0], "-")
-			initialBlock = value[0]
+			memoryStats.InitialBlock = value[0]
 		}
 
 		if i == len(blocks)-1 {
 			value := strings.Split(line[0], "-")
-			finalBlock = value[1]
+			memoryStats.FinalBlock = value[1]
 		}
 	}
 
@@ -251,7 +253,8 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 	// Calcula el porcentaje de consumo de memoria RAM
 	ramUsagePercentage = float64(residentSize) / float64(serverMemorySize) * 100
 
-
+	initialBlock = memoryStats.InitialBlock
+	finalBlock = memoryStats.FinalBlock
 
 	return residentSize, virtualSize, ramUsagePercentage, initialBlock, finalBlock
 }
