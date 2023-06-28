@@ -214,16 +214,16 @@ func parseSmapsData(smapsData string) (residentSize, virtualSize int, ramUsagePe
 		
 		if i == 0 {
 			value := strings.Split(line[0], "-")
-			fmt.Println("TAMAÑO DE BLOQUE ----------------")
-			fmt.Println(value)
-			fmt.Println("----------------")
+			initialBlock = strings.Split(value[0], " ")[1]
+			fmt.Println("--------------------- Inicial")
+			fmt.Println(initialBlock)
+			fmt.Println("---------------------")
 		}
 	}
 
 	lines := strings.Split(smapsData, "\n")
 
 	for i, line := range lines {
-		fmt.Println(i, line)
 		if strings.HasPrefix(line, "Size:") {
 			fields := strings.Fields(line)
 			size, _ := strconv.Atoi(fields[1])
