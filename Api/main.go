@@ -260,21 +260,30 @@ func parseSmapsData(smapsData string) MemoryStats {
 		esto usando la función strings.HasPrefix() que permite identificar si una cadena
 		comienza con un prefijo determinado
 	*/
+	lineSize := false
+	lineRss := false
 	for _, line := range lines {
 		if strings.HasPrefix(line, "Size:") {
 			fields := strings.Fields(line)
 			size, _ := strconv.Atoi(fields[1])
 			smapReturn.Size = size
 			memoryStats.Size += size
+			lineSize = true
 		}
 		if strings.HasPrefix(line, "Rss:") {
 			fields := strings.Fields(line)
 			rss, _ := strconv.Atoi(fields[1])
 			smapReturn.Rss = rss
 			memoryStats.Rss += rss
+			lineRss = true
 		}
 
-		smapReturnArray = append(smapReturnArray, smapReturn)
+		if lineSize && lineRss {
+			smapReturnArray = append(smapReturnArray, smapReturn)
+			smapReturn = SmapReturn{}
+			lineSize = false
+			lineRss = false
+		}
 	}
 
 	/*
